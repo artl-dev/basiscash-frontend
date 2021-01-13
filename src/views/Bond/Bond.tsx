@@ -11,12 +11,15 @@ import Spacer from '../../components/Spacer';
 import useBondStats from '../../hooks/useBondStats';
 import useBasisCash from '../../hooks/useBasisCash';
 import useBondOraclePriceInLastTWAP from '../../hooks/useBondOraclePriceInLastTWAP';
+import useBondOracleBlockTimestampLast from '../../hooks/useBondOracleBlockTimestampLast';
 import { useTransactionAdder } from '../../state/transactions/hooks';
 import config from '../../config';
 import LaunchCountdown from '../../components/LaunchCountdown';
 import ExchangeStat from './components/ExchangeStat';
+import RefreshStat from './components/RefreshStat';
 import useTokenBalance from '../../hooks/useTokenBalance';
 import { getDisplayBalance } from '../../utils/formatBalance';
+import { getDisplayDate } from '../../utils/formatDate';
 import { BigNumber } from 'ethers';
 
 const Bond: React.FC = () => {
@@ -26,6 +29,7 @@ const Bond: React.FC = () => {
   const addTransaction = useTransactionAdder();
   const bondStat = useBondStats();
   const cashPrice = useBondOraclePriceInLastTWAP();
+  const blockTimestampLast = useBondOracleBlockTimestampLast();
 
   const bondBalance = useTokenBalance(basisCash?.BAB);
 
@@ -47,9 +51,19 @@ const Bond: React.FC = () => {
     },
     [basisCash, addTransaction],
   );
+
+  const handleBondOracleBlockTimestampLast = useCallback(
+    async () => {
+      const tx = await basisCash.updateBondOracle();
+      addTransaction(tx, { summary: `Update Bond Oracle BlockTimestampLast` });
+    },
+    [basisCash, addTransaction],
+  );
+
   const cashIsOverpriced = useMemo(() => cashPrice.gt(BigNumber.from(10).pow(18)), [cashPrice]);
   const cashIsUnderPriced = useMemo(() => Number(bondStat?.priceInUSDT) < 1.0, [bondStat]);
 
+  const refreshIsDisable = false;
   const isLaunched = Date.now() >= config.bondLaunchesAt.getTime();
   if (!isLaunched) {
     return (
@@ -91,20 +105,23 @@ const Bond: React.FC = () => {
                     cashIsOverpriced
                       ? 'MIC is over $1'
                       : cashIsUnderPriced
-                      ? `${Math.floor(
+                        ? `${Math.floor(
                           100 / Number(bondStat.priceInUSDT) - 100,
                         )}% return when MIC > $1`
-                      : '-'
+                        : '-'
                   }
                   onExchange={handleBuyBonds}
                   disabled={!bondStat || cashIsOverpriced}
                 />
               </StyledCardWrapper>
               <StyledStatsWrapper>
-                <ExchangeStat
+                <RefreshStat
                   tokenName="MIC"
                   description="Last-Hour TWAP Price"
                   price={getDisplayBalance(cashPrice, 18, 2)}
+                  lastUpdatedTime={`Last Updated Time : ${getDisplayDate(blockTimestampLast)}`}
+                  onRefresh={handleBondOracleBlockTimestampLast}
+                  disabled={Date.now()/1000 - blockTimestampLast < 300}
                 />
                 <Spacer size="md" />
                 <ExchangeStat
@@ -128,17 +145,17 @@ const Bond: React.FC = () => {
             </StyledBond>
           </>
         ) : (
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              flex: 1,
-              justifyContent: 'center',
-            }}
-          >
-            <Button onClick={() => connect('injected')} text="Unlock Wallet" />
-          </div>
-        )}
+            <div
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'center',
+              }}
+            >
+              <Button onClick={() => connect('injected')} text="Unlock Wallet" />
+            </div>
+          )}
       </Page>
     </Switch>
   );

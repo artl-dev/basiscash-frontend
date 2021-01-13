@@ -384,4 +384,26 @@ export class BasisCash {
     const prevAllocation = new Date(nextAllocation.getTime() - period.toNumber() * 1000);
     return { prevAllocation, nextAllocation };
   }
+
+  async getBondOracleBlockTimestampLast(): Promise<number> {
+    const { bondOracle } = this.contracts;
+    return await bondOracle.blockTimestampLast();
+  }
+
+  async getSeigniorageOracleBlockTimestampLast(): Promise<number> {
+    const { Oracle } = this.contracts;
+    return await Oracle.blockTimestampLast();
+  }
+
+  async updateBondOracle(): Promise<TransactionResponse> {
+    const { bondOracle } = this.contracts;
+    const gas = await bondOracle.estimateGas.update();
+    alert(gas);
+    return await bondOracle.update(this.gasOptions(gas));
+  }
+
+  async updateSeigniorageOracle(): Promise<TransactionResponse> {
+    const { Oracle } = this.contracts;
+    return await Oracle.update();
+  }
 }
