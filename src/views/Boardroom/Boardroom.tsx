@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { useWallet } from 'use-wallet';
 
@@ -15,6 +15,7 @@ import useStakedBalanceOnBoardroom from '../../hooks/useStakedBalanceOnBoardroom
 import config from '../../config';
 import LaunchCountdown from '../../components/LaunchCountdown';
 import Stat from './components/Stat';
+import TWAPStat from './components/TWAPStat';
 import ProgressCountdown from './components/ProgressCountdown';
 import useCashPriceInEstimatedTWAP from '../../hooks/useCashPriceInEstimatedTWAP';
 import useTreasuryAmount from '../../hooks/useTreasuryAmount';
@@ -24,6 +25,10 @@ import useTreasuryAllocationTimes from '../../hooks/useTreasuryAllocationTimes';
 import Notice from '../../components/Notice';
 import useBoardroomVersion from '../../hooks/useBoardroomVersion';
 import moment from 'moment';
+import useBasisCash from '../../hooks/useBasisCash';
+import { useTransactionAdder } from '../../state/transactions/hooks';
+import useSeigniorageOracleBlockTimestampLast from '../../hooks/useSeigniorageOracleBlockTimestampLast';
+import { getDisplayDate } from '../../utils/formatDate';
 
 const Boardroom: React.FC = () => {
   useEffect(() => window.scrollTo(0, 0));
@@ -67,6 +72,17 @@ const Boardroom: React.FC = () => {
     return <></>;
   }, [boardroomVersion]);
 
+  const basisCash = useBasisCash();
+  const addTransaction = useTransactionAdder();
+  const blockTimestampLast = useSeigniorageOracleBlockTimestampLast();
+  const handleSeigniorageOracleBlockTimestampLast = useCallback(
+    async () => {
+      const tx = await basisCash.updateSeigniorageOracle();
+      addTransaction(tx, { summary: `Update Bond Oracle BlockTimestampLast` });
+    },
+    [basisCash, addTransaction],
+  );
+
   const isLaunched = Date.now() >= config.boardroomLaunchesAt.getTime();
   if (!isLaunched) {
     return (
@@ -102,10 +118,11 @@ const Boardroom: React.FC = () => {
                 deadline={nextEpoch}
                 description="Next Epoch"
               />
-              <Stat
+              <TWAPStat
                 icon="💵"
                 title={cashStat ? `$${cashStat.priceInUSDT}` : '-'}
                 description="MIC Price (TWAP)"
+                lastUpdatedTime={`Last Updated Time : ${getDisplayDate(blockTimestampLast)}`}
               />
               <Stat
                 icon="🚀"
@@ -122,6 +139,9 @@ const Boardroom: React.FC = () => {
                 description="Treasury Amount"
               />
             </StyledHeader>
+            <Center>
+              <Button text="Refresh" onClick={handleSeigniorageOracleBlockTimestampLast} disabled={false}/>
+            </Center>
             <StyledBoardroom>
               <StyledCardsWrapper>
                 <StyledCardWrapper>
@@ -223,6 +243,7 @@ const Center = styled.div`
   flex: 1;
   align-items: center;
   justify-content: center;
+  margin-bottom: ${(props) => props.theme.spacing[5]}px;
 `;
 
 export default Boardroom;

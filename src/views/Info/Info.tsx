@@ -11,6 +11,10 @@ import { commify } from 'ethers/lib/utils';
 import useCashPriceInEstimatedTWAP from '../../hooks/useCashPriceInEstimatedTWAP';
 import { ShareMetric } from '../../basis-cash/types';
 import { BigNumber } from 'ethers';
+import Button from '../../components/Button';
+import { useTransactionAdder } from '../../state/transactions/hooks';
+import useSeigniorageOracleBlockTimestampLast from '../../hooks/useSeigniorageOracleBlockTimestampLast';
+import { getDisplayDate } from '../../utils/formatDate';
 
 function shareDistStatsFromMetric(metric: ShareMetric): ShareDistStats {
   const pct = (x: string, y: string): string => {
@@ -59,6 +63,16 @@ const Info: React.FC = () => {
     }
   }, [shareMetric])
 
+  const addTransaction = useTransactionAdder();
+  const blockTimestampLast = useSeigniorageOracleBlockTimestampLast();
+  const handleSeigniorageOracleBlockTimestampLast = useCallback(
+    async () => {
+      const tx = await basisCash.updateSeigniorageOracle();
+      addTransaction(tx, { summary: `Update Bond Oracle BlockTimestampLast` });
+    },
+    [basisCash, addTransaction],
+  );
+
   return (
     <Page>
       <InfoWrapper>
@@ -71,7 +85,7 @@ const Info: React.FC = () => {
           left={
             <>
               <SectionHeader text="Supply" />
-              <SectionData title="MIS Circ. Supply" value={shareMetric ? commify(shareMetric.circulatingSupply): '-'} />
+              <SectionData title="MIS Circ. Supply" value={shareMetric ? commify(shareMetric.circulatingSupply) : '-'} />
               <SectionData title="MIB Supply" value={bond ? commify(bond.totalSupply) : '-'} />
             </>
           }
@@ -94,7 +108,7 @@ const Info: React.FC = () => {
           right={
             <>
               <SectionData title="MIS in USDT/MIS Pool" value={shareDist.USDTMISPoolPct} />
-              <SectionData title="Total MIS Supply" value={share ? commify(share.totalSupply): '-'} />
+              <SectionData title="Total MIS Supply" value={share ? commify(share.totalSupply) : '-'} />
             </>
           }
         />
@@ -114,6 +128,9 @@ const Info: React.FC = () => {
         {/*  }*/}
         {/*/>*/}
       </InfoWrapper>
+      <Center>
+        <Button text="Refresh" onClick={handleSeigniorageOracleBlockTimestampLast} disabled={false} />
+      </Center>
     </Page>
   );
 };
@@ -124,6 +141,14 @@ const InfoWrapper = styled.div`
   background-color: #26272D;
   padding: ${(props) => props.theme.spacing[3]}px;
   color: ${(props) => props.theme.color.grey[200]};
+`;
+
+const Center = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  margin-top: ${(props) => props.theme.spacing[2]}px;
+  margin-bottom: ${(props) => props.theme.spacing[5]}px;
 `;
 
 export default Info;

@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import useBasisCash from './useBasisCash';
 import config from '../config';
-import { BigNumber, FixedNumber } from 'ethers';
-import { time } from 'console';
 
 const useSeigniorageOracleBlockTimestampLast = () => {
   const [timestamp, setTimestamp] = useState<number>(Number);

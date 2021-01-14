@@ -121,7 +121,7 @@ const Bond: React.FC = () => {
                   price={getDisplayBalance(cashPrice, 18, 2)}
                   lastUpdatedTime={`Last Updated Time : ${getDisplayDate(blockTimestampLast)}`}
                   onRefresh={handleBondOracleBlockTimestampLast}
-                  disabled={Date.now()/1000 - blockTimestampLast < 300}
+                  disabled={!blockTimestampLast || Date.now()/1000 - blockTimestampLast < 300}
                 />
                 <Spacer size="md" />
                 <ExchangeStat

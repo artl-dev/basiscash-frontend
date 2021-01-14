@@ -2,8 +2,6 @@ import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import Card from '../../../components/Card';
 import Button from '../../../components/Button';
-import useBasisCash from '../../../hooks/useBasisCash';
-import { useTransactionAdder } from '../../../state/transactions/hooks';
 
 interface RefreshStatProps {
   tokenName: string;
@@ -15,16 +13,6 @@ interface RefreshStatProps {
 }
 
 const ExchangeStat: React.FC<RefreshStatProps> = ({ tokenName, description, price, lastUpdatedTime, onRefresh, disabled = false }) => {
-  // const basisCash = useBasisCash();
-  // const addTransaction = useTransactionAdder();
-  // const handleBondOracle = useCallback(
-  //   async () => {
-  //     const tx = await basisCash.updateBondOracle();
-  //     addTransaction(tx, { summary: `Update Bond Oracle` });
-  //   },
-  //   [basisCash, addTransaction],
-  // );
-
   return (
     <Card>
       <StyledCardContentInner>

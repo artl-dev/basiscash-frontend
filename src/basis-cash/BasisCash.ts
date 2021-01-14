@@ -397,9 +397,7 @@ export class BasisCash {
 
   async updateBondOracle(): Promise<TransactionResponse> {
     const { bondOracle } = this.contracts;
-    const gas = await bondOracle.estimateGas.update();
-    alert(gas);
-    return await bondOracle.update(this.gasOptions(gas));
+    return await bondOracle.update();
   }
 
   async updateSeigniorageOracle(): Promise<TransactionResponse> {
