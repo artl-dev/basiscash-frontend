@@ -59,10 +59,12 @@ const LPTokenHelpText: React.FC<{ bank: BankEntity }> = ({ bank }) => {
   let sushiswapUrl: string;
   if (bank.depositTokenName.includes('MIC')) {
     pairName = 'MIC-USDT pair';
-    sushiswapUrl = 'https://sushiswap.fi/pair/0xC9cB53B48A2f3A9e75982685644c1870F1405CCb';
+    // sushiswapUrl = '0xC9cB53B48A2f3A9e75982685644c1870F1405CCbhttps://sushiswap.fi/pair/';
+    sushiswapUrl = 'https://app.uniswap.org/#/add/0xc12EEadb7A6E5dFe16D1D2D626BA7eb767d6e032/0x4280e07290aB28B52D4A70D002D0E1b5Da6D2aE1';
   } else {
     pairName = 'MIS-USDT pair';
-    sushiswapUrl = 'https://sushiswap.fi/pair/0x066F3A3B7C8Fa077c71B9184d862ed0A4D5cF3e0';
+    // sushiswapUrl = 'https://sushiswap.fi/pair/0x066F3A3B7C8Fa077c71B9184d862ed0A4D5cF3e0';
+    sushiswapUrl = 'https://app.uniswap.org/#/add/0xD480305d581977150DBba98c7212c1F1A42C7ce8/0x4280e07290aB28B52D4A70D002D0E1b5Da6D2aE1';
   }
   return (
     <StyledLink href={sushiswapUrl} target="_blank">

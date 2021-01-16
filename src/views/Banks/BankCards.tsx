@@ -16,6 +16,7 @@ const BankCards: React.FC = () => {
   const activeBanks = banks.filter((bank) => !bank.finished);
   const inactiveBanks = banks.filter((bank) => bank.finished);
 
+
   let finishedFirstRow = false;
   const inactiveRows = inactiveBanks.reduce<Bank[][]>(
     (bankRows, bank) => {

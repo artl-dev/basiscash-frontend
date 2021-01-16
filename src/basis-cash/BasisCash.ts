@@ -1,4 +1,5 @@
-import { Fetcher, Route, Token } from '@sushiswap/sdk';
+// import { Fetcher, Route, Token } from '@sushiswap/sdk';
+import { Fetcher, Route, Token } from '@uniswap/sdk';
 import { Configuration } from './config';
 import { ContractName, ShareMetric, SushiSwapPoolMISRemain, TokenStat, TreasuryAllocationTime } from './types';
 import { BigNumber, Contract, ethers, Overrides } from 'ethers';
@@ -106,6 +107,7 @@ export class BasisCash {
    */
   async getCashStatFromSushiSwap(): Promise<TokenStat> {
     const supply = await this.BAC.displayedTotalSupply();
+
     return {
       priceInUSDT: await this.getTokenPriceFromSushiSwap(this.BAC),
       totalSupply: supply,
@@ -163,7 +165,7 @@ export class BasisCash {
 
   async getShareMetric(): Promise<ShareMetric> {
     const totalSupply = await this.BAS.totalSupply();
-
+    
     const { USDTMICLPTokenSharePool, USDTMISLPTokenSharePool } = this.contracts;
     const [
       USDTMICStakePoolRemain,
@@ -221,7 +223,6 @@ export class BasisCash {
 
     const usdt = new Token(chainId, USDT[0], USDT[1]);
     const token = new Token(chainId, tokenContract.address, 18);
-
     try {
       const usdtToToken = await Fetcher.fetchPairData(usdt, token, this.provider);
       const priceInUSDT = new Route([usdtToToken], token);

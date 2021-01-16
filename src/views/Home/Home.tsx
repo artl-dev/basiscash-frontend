@@ -29,7 +29,8 @@ const Home: React.FC = () => {
     <Page>
       <PageHeader
         title="Welcome to MITH Cash!"
-        subtitle="Buy, sell, and provide liquidity for MITH Cash and MITH Shares on SushiSwap"
+        // subtitle="Buy, sell, and provide liquidity for MITH Cash and MITH Shares on SushiSwap"
+        subtitle="Buy, sell, and provide liquidity for MITH Cash and MITH Shares on Uniswap (Rinkeby)"
       />
       <Spacer size="md" />
       <CardWrapper>
