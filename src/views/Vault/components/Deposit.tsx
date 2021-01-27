@@ -38,7 +38,7 @@ const Deposit: React.FC<DepositProps> = ({ vault }) => {
   const depositedText = getDisplayBalance(depositedBalance, vault.token.decimal, 6);
   const [apy, tvl, pricePerToken, inRatio] = useAPY(vault.contract, vault.token.address);
   const apyText = apy ? `${apy.toFixed(2)}%` : '';
-  const tvlText = tvl ? `${parseInt(tvl)}$` : '';
+  const tvlText = tvl ? `$${parseInt(tvl)}` : '';
 
   const ratio = inRatio ? inRatio : 1;
   const balanceText = (parseFloat(depositedText) * ratio).toFixed(6);
@@ -96,7 +96,7 @@ const Deposit: React.FC<DepositProps> = ({ vault }) => {
           </StyledCardContent>
           {pricePerToken && (
             <StyledCardContentValue>
-              <Value value={`${(parseFloat(balanceText) * pricePerToken).toFixed(2)}$`} />
+              <Value value={`$${(parseFloat(balanceText) * pricePerToken).toFixed(2)}`} />
               <Label text={`Value`} />
             </StyledCardContentValue>
           )}
