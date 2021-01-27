@@ -46,11 +46,15 @@ const useAPY = (vaultName: ContractName, poolAddr: string) => {
 
             const totalSupplyBN = await basisCash.totalSupply(poolName);
             const balanceBN = await basisCash.totalBalanceOfVault(vaultName);
+            const vaultTotalSupplyBN = await basisCash.totalSupply(vaultName);
+
+            const balance = parseFloat(getDisplayBalance(balanceBN));
+            const ratio = balance / parseFloat(getDisplayBalance(vaultTotalSupplyBN));
 
             const pricePerToken = totalValueStaked / parseFloat(getDisplayBalance(totalSupplyBN));
-            const tvl = pricePerToken * parseFloat(getDisplayBalance(balanceBN));
+            const tvl = pricePerToken * balance;
 
-            setApy([getCompoundingAPY(misAPY * 0.85), tvl, pricePerToken]);
+            setApy([getCompoundingAPY(misAPY * 0.85), tvl, pricePerToken, ratio]);
         }
       }
 
