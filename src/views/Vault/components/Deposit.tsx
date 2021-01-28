@@ -34,14 +34,14 @@ const Deposit: React.FC<DepositProps> = ({ vault }) => {
 
   // TODO: reactive update of token balance
   const tokenBalance = useTokenBalance(vault.token);
-  const depositedBalance = useDepositedBalance(vault.contract);
-  const depositedText = getDisplayBalance(depositedBalance, vault.token.decimal, 6);
+  const shares = useDepositedBalance(vault.contract);
+  const shareText = getDisplayBalance(shares, vault.token.decimal, 6);
   const [apy, tvl, pricePerToken, inRatio] = useAPY(vault.contract, vault.token.address);
   const apyText = apy ? `${apy.toFixed(2)}%` : '';
   const tvlText = tvl ? `$${parseInt(tvl)}` : '';
 
   const ratio = inRatio ? inRatio : 1;
-  const balanceText = (parseFloat(depositedText) * ratio).toFixed(6);
+  const balanceText = (parseFloat(shareText) * ratio).toFixed(6);
 
   const { onDeposit } = useDeposit(vault);
   const { onWithdraw } = useVaultWithdraw(vault);
@@ -86,10 +86,6 @@ const Deposit: React.FC<DepositProps> = ({ vault }) => {
               {!!tvl && <Label text="TVL" />}
             </StyledCardContent>
           </StyledCardHeader>
-          <StyledCardContent>
-            <Value value={depositedText} />
-            <Label text={`${vault.tokenName} Deposited`} />
-          </StyledCardContent>
           <StyledCardContent>
             <Value value={balanceText} />
             <Label text={`${vault.tokenName} Balance`} />
