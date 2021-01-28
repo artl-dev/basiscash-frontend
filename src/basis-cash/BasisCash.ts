@@ -350,7 +350,7 @@ export class BasisCash {
     try {
       return await pool.totalSupply();
     } catch (err) {
-      console.error(`Failed to call totalSupply() on vault ${pool.address}: ${err.stack}`);
+      console.error(`Failed to call totalSupply() on contract ${pool.address}: ${err.stack}`);
       return BigNumber.from(0);
     }
   }
