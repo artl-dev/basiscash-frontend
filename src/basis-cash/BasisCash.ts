@@ -342,7 +342,7 @@ export class BasisCash {
   /**
    * Get total supply of a given pool.
    * @param poolName A name of pool contract.
-   * @returns {BigNumber} reward rate
+   * @returns {BigNumber} total supply
    */
   async totalSupply(poolName: ContractName): Promise<BigNumber> {
     const pool = this.contracts[poolName];
@@ -350,7 +350,7 @@ export class BasisCash {
     try {
       return await pool.totalSupply();
     } catch (err) {
-      console.error(`Failed to call totalSupply() on vault ${pool.address}: ${err.stack}`);
+      console.error(`Failed to call totalSupply() on contract ${pool.address}: ${err.stack}`);
       return BigNumber.from(0);
     }
   }
